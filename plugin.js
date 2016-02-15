@@ -35,8 +35,13 @@ CKEDITOR.plugins.add('texttransform',
                         if (node.type == CKEDITOR.NODE_TEXT && node.getText()) {
 
                             nodeText = node.$.textContent;
+                            if (node.equals(range.startContainer) && node.equals(range.endContainer)) {
+                            	nodeText = nodeText.substr(0, range.startOffset) 
+                            	  			+ transformFunc(nodeText.substr(range.startOffset, range.endOffset-range.startOffset)) 
+                            	  			+ nodeText.substr(range.endOffset);
+                            }
 
-                            if (node.equals(range.startContainer)) {
+                            else if (node.equals(range.startContainer)) {
 
                                 nodeText = nodeText.substr(0, range.startOffset) +
                                     transformFunc(nodeText.substr(range.startOffset));
@@ -55,6 +60,7 @@ CKEDITOR.plugins.add('texttransform',
                         }
                     }
                 }
+                selection.selectRanges([range]);		//preserve selection highlight
             }
 
             // add transformTextSwitch command to be used with button
